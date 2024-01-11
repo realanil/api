@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node --esm src/libs/server/index.ts",
     "vt": "ts-node --esm src/libs/server/tester.ts",
+    "build": "tsc -p ./",
     "start": "tsc src/index.ts -w & pm2 start src/index.js --watch"
   },
   "repository": {
