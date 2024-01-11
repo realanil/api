@@ -1,2 +1,2 @@
-# Mahjong 2 Ways
+# Bonanza API
 
