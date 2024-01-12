@@ -1,20 +1,59 @@
-import { IRandom, RandomObj } from "../../generic/rng/Random";
+import { IRandom, RandomObj } from "../../generic/rng/random";
+import { Cloner } from "../utils/cloner";
 
 export class CreateStops {
 
-    static StandardStopsForNulls ( initialStop:number[], reelSet:number[][], grid:number[][]){
-        for(let col :number=0; col < grid.length; col ++){
+    static StandardStopsForNulls ( initialStop:number[], reelSet:number[][], grid:number[][]) :number[][]{
+        const newStops = Cloner.CloneGrid( grid);
+
+        for(let col :number=0; col < newStops.length; col ++){
             const reelLength:number = reelSet[col].length;
-            for(let row :number=0; row < grid[col].length; row ++){
-                if ( grid[col][row] === -1 ){
+            for(let row :number=0; row < newStops[col].length; row ++){
+                if ( newStops[col][row] === -1 ){
                     let stop:number = initialStop[col] - row - 1;
                     stop = (stop < 0) ? (reelLength + stop) : stop;
-                    grid[col][row] = stop;
+                    newStops[col][row] = stop;
                 } else {
                     break;
                 }
             }
         }
+        return newStops;
+    }
+
+    static StandardReverseStopsForNulls ( initialStop:number[], reelSet:number[][], grid:number[][]) :number[][]{
+        const newStops = Cloner.CloneGrid( grid);
+
+        for(let col :number=0; col < newStops.length; col ++){
+            const reelLength:number = reelSet[col].length;
+            for(let row :number=0; row < newStops[col].length; row ++){
+                if ( newStops[col][row] === -1 ){
+                    let stop:number = initialStop[col] + row + 1;
+                    stop = (stop < 0) ? (reelLength + stop) : stop;
+                    newStops[col][row] = stop;
+                } 
+            }
+        }
+        return newStops;
+    }
+
+    
+
+    static StandardStopsFromStops (prestop:number[], reelSet:number[][], layout:number[]) : number[][] {
+
+        const stops:number[][] = [];
+        for (let i = 0; i < prestop.length; i++) {
+            const col:number = prestop[i];
+            stops[col] = [];
+
+            const reelLength:number = reelSet[col].length;
+            for (let row = 0; row < layout[col]; row++) {
+                let stop:number = prestop[i] + row;
+                stop = (stop >= reelLength) ? (stop - reelLength) : stop;
+                stops[col][row] = stop;
+            }
+        }
+        return stops;
     }
 
     static StandardStops (rng:IRandom, reelSet:number[][], layout:number[]) : number[][] {

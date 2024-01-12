@@ -4,13 +4,17 @@ import { ResponseModel } from "../base/response_model";
 
 export class PlayResponseModel extends ResponseModel {
 
+    public reelId :string = null;
     public grid :number[][] = [];
+    public initialGrid :number[][] = [];
     public multiplier :number;
     public wins :PlaySlotWinsResponse[] = []; 
     public win :BigNumber = new BigNumber(0);
     public subspins :SubSpinResponse[];
     public feature :FeatureResponse;
     public status :StatusResponse;
+    public spinFeatures : SpinFeatureResponse[] = null;
+    public cheats :number[] = null;
 
     constructor( version:string, name:string, error :string, state:SlotState ) {
         super(version, name, error);
@@ -23,6 +27,8 @@ export class PlayResponseModel extends ResponseModel {
         this.status.totalBet = state.gameStatus.totalBet;
         this.status.totalWin = state.gameStatus.totalWin;
 
+        this.reelId = state.paidSpin[0].reelId;
+        this.initialGrid = state.paidSpin[0].initialGrid;
         this.grid = state.paidSpin[0].finalGrid;
         this.win = state.paidSpin[0].win;
         this.multiplier = state.paidSpin[0].multiplier;
@@ -30,6 +36,19 @@ export class PlayResponseModel extends ResponseModel {
         state.paidSpin[0].wins.forEach( win => {
             this.wins.push( new PlaySlotWinsResponse( win.id, win.symbol, win.type, win.offsets, win.pay, win.wildIncluded) );
         });
+
+        this.spinFeatures = [];
+        state.paidSpin[0].features.forEach( feature => {
+            if (feature.isActive) {
+                const featureResp :SpinFeatureResponse = new SpinFeatureResponse();
+                featureResp.active = feature.isActive;
+                featureResp.symbol = feature.symbol;
+                featureResp.id = feature.id;
+                featureResp.offsets = feature.offsets;
+                featureResp.level = feature.level;
+                this.spinFeatures.push(featureResp );
+            }
+        })
 
         if (state.freespin !== null && state.freespin !== undefined){
             this.feature = new FeatureResponse();
@@ -57,6 +76,8 @@ export class PlayResponseModel extends ResponseModel {
                 this.subspins.push( subspin);
             }
         }
+
+        this.cheats = state.cheatNums;
     }
 }
 
@@ -78,10 +99,18 @@ class SubSpinResponse {
     public prevWin :BigNumber = new BigNumber(0);
 }
 
-class FeatureResponse{
+class FeatureResponse {
     public total :number;
     public left :number;
     public accumulated :BigNumber;
+}
+
+class SpinFeatureResponse {
+    public id :string  = null;
+    public active :boolean;
+    public symbol :number;
+    public offsets :number[]  = null;
+    public level :string = null;
 }
 
 class PlaySlotWinsResponse {

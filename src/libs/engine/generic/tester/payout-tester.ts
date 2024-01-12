@@ -32,15 +32,11 @@ export class PayoutTester{
             }
         }
 
-        this.createPayoutKey(key, "", 999999999);
+        this.createPayoutKey(key, "", 2500);
         this.updateKeyCount(key);
     }
 
     protected updatePayout( key :string, payout :BigNumber) {
-
-        if ( payout.isLessThanOrEqualTo(new BigNumber(0)) ){
-            return;
-        }
 
         for (let i:number=0; i<this.payouts.length; i++ ){
             if ( this.payouts[i].key == key ) {
@@ -50,7 +46,7 @@ export class PayoutTester{
             }
         }
 
-        this.createPayoutKey(key, "", 999999999);
+        this.createPayoutKey(key, "", 2000);
         this.updateKeyCount(key);
         
     }
@@ -72,19 +68,14 @@ export class PayoutTester{
     }
 
     protected printReport() {
-
-        this.payouts.sort((a,b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))        
-        // fileName += ".txt";
-        // try {
-        //     PrintStream out = new PrintStream(new FileOutputStream(fileName));
-        //     System.setOut(out);
-        // } catch (FileNotFoundException e) {
-        //     e.printStackTrace();
-        // }
-
+        this.payouts.sort((a,b) => (a.key > b.key) ? 1 : ((b.key > a.key) ? -1 : 0))  
+        this.payouts.sort((a,b) => (a.group > b.group) ? 1 : ((b.group > a.group) ? -1 : 0))  
+        this.payouts.sort((a,b) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0));
+        
         console.log("Total Spins," + this.totalSpins);
         console.log("Total Bet," + this.totalBet);
         console.log("Total Win," + this.totalWin);
+        console.log("Game RTP," + this.getGameRTP().toFormat(5) );
         console.log("Winning Spins," + this.winningSpins);
         console.log("");
 
@@ -101,17 +92,17 @@ export class PayoutTester{
             }
 
             if ( pay.payout.isGreaterThan( new BigNumber(0)) ){
-                console.log( pay.key + " , count : " + pay.count + ", payout : " + pay.payout );
+                console.log( pay.key + "," + pay.count + "," + pay.payout );
             } else {
                 if (pay.count > 0) {
-                    console.log(pay.key + ", count : " + pay.count );
+                    console.log(pay.key + "," + pay.count );
                 }
             }
         }
     }
 
     protected printProgressReport(spinsPlayed :number) {
-        if (spinsPlayed > 10 && spinsPlayed % 50000 == 0) {
+        if (spinsPlayed > 100 && spinsPlayed % 50000 == 0) {
             console.log(spinsPlayed + " RTP: " + this.getGameRTP());
         }
     }

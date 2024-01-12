@@ -7,15 +7,16 @@ import { PlatformMath } from "../base/platform_math";
 
 export class ConfigResponseModel extends ResponseModel {
 
-    public betMultiplier : BigNumber;
-    public paytable : SymbolsResponse[];
-    public paylines : number[][];
-    public defaultBet :number;
-    public bets :number[];
-    public grid :number[][];
-    public prevSpin :PlayResponseModel;
+    public betMultiplier: BigNumber;
+    public paytable: SymbolsResponse[];
+    public paylines: number[][];
+    public defaultBet:number;
+    public bets:number[];
+    public grid:number[][];
+    public prevSpin:ResponseModel;
+    public buyBonus:Map<string, number>;
 
-    constructor( version:string, name:string, math:PlatformMath, response:PlayResponseModel ){
+    constructor( version:string, name:string, math:PlatformMath, response:ResponseModel ){
 
         super(version, name, "");
 
@@ -34,6 +35,13 @@ export class ConfigResponseModel extends ResponseModel {
             this.paylines.push( p.slice() );
         });
 
+        if (math.buyBonus && math.buyBonus.length > 0){
+            this.buyBonus = new Map<string, number>();
+            math.buyBonus.forEach( bonus => {
+                this.buyBonus[bonus.id] = bonus.cost;
+            });
+        }
+
         if (response) {
             this.prevSpin = response;
         } else {
@@ -46,13 +54,14 @@ export class ConfigResponseModel extends ResponseModel {
 
 class SymbolsResponse {
     
-    public name : string = "";
-    public id : number = -1;
-    public payout : BigNumber[] = [];
+    public name: string = "";
+    public id: number = -1;
+    public payout: BigNumber[] = [];
     
-    constructor( name : string, id : number, payout : BigNumber[]) {
+    constructor( name: string, id: number, payout: BigNumber[]) {
         this.name = name;
         this.id = id;
         this.payout = payout;
     }
 }
+

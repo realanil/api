@@ -19,7 +19,6 @@ import { ScatterSymbolCount } from "../../libs/engine/slots/conditions/scatter_s
 import { Triggerer } from "../../libs/engine/slots/features/triggerer";
 import BigNumber from "bignumber.js";
 import { UpdateFeature } from "../../libs/engine/slots/features/update_feature";
-import { features } from "process";
 import { RandomObj } from "../../libs/engine/generic/rng/random";
 import { SlotConditionMath } from "../../libs/engine/slots/models/slot_math_model";
 

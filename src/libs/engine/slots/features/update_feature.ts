@@ -9,4 +9,18 @@ export class UpdateFeature{
         }
     }
 
+    static updateReSpinCount( state:SlotState){
+        state.respin.left--;
+        if (state.respin.left === 0){
+            state.gameStatus.nextAction = ["spin"];
+        }
+    }
+
+    static updateFreeReSpinCount( state:SlotState){
+        state.freerespin.left--;
+        if (state.freerespin.left === 0){
+            state.gameStatus.nextAction = ["freespin"];
+        }
+    }
+
 }

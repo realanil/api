@@ -1,4 +1,4 @@
-import { IRandom } from "../../generic/rng/Random";
+import { IRandom } from "../../generic/rng/random";
 import { WeightedSymbols } from "../models/slot_math_model";
 import { RandomHelper } from "../utils/random";
 
